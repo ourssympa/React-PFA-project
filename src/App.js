@@ -10,6 +10,10 @@ import ProfessorIndex from './pages/ProfessorPage/ProfessorIndex';
 import ProfessorCreate from './pages/ProfessorPage/ProfessorCreate';
 import ProfessorCourse from './pages/ProfessorPage/ProfessorCourse';
 import ProfessorUpdate from './pages/ProfessorPage/ProfessorUpdate';
+import CourseCreate from './pages/CoursesPages/CourseCreate';
+import StudentIndex from './pages/StudentPages/StudentIndex';
+import StudentCreate from './pages/StudentPages/StudentCreate';
+import StudentUpdate from './pages/StudentPages/StudentUpdate';
 function App() {
   return (
         <BrowserRouter>
@@ -22,7 +26,14 @@ function App() {
           <Route path='/professor_create' element={<ProfessorCreate/>}/>
           <Route path='/professor_update/:id' element={<ProfessorUpdate/>}/>
           <Route path='/professor_course/:id' element={<ProfessorCourse/>}/>
-     
+
+
+          <Route path='/course/:id' element={<CourseCreate/>}/>
+          
+          <Route path='/student' element={<StudentIndex/>}/>
+          <Route path='/student_create' element={<StudentCreate/>}/>
+          <Route path='/student_update' element={<StudentUpdate/>}/>
+
         </Routes>
         </BrowserRouter>
   );
