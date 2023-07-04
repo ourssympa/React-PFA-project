@@ -217,9 +217,12 @@ export default class PageHeader extends Component {
                                       <span key="t-dashboards"> Gestion des etudiants</span>
                                   </a>
                                   <ul className="sub-menu" aria-expanded="false">
-                                      <li><a href="index.html" key="t-default">Ajouter un nouveau etudiant</a></li>
-                                      <li><a href="dashboard-saas.html" key="t-saas">Saas</a></li>
+                                      <li><a href="/student_filter" key="t-default">Etudiant par option et niveau</a></li>
                                    </ul>
+                                   <a href="/course" className="waves-effect">
+                                      <i className="bx bx-home-circle"></i><span className="badge rounded-pill bg-info float-end">04</span>
+                                      <span key="t-dashboards"> Gestion des cours</span>
+                                  </a>
                               </li>
   
                           </ul>

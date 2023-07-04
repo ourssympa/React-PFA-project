@@ -31,4 +31,10 @@ function deleteStudent(id) {
 
 }
 
-export const StudentService = {addStudent,getStudent,getStudents,updateStudent,deleteStudent};
+function filterByNiveauAndOption(data) {
+    const res = axios.post(ApiConfig.baseUrl+'/students/byoption_and_niveau',data);
+    return res;
+    
+}
+
+export const StudentService = {addStudent,getStudent,getStudents,updateStudent,deleteStudent,filterByNiveauAndOption};

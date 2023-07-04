@@ -1,80 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import PageHeader from '../../components/PageHeader';
-import { ToastContainer,toast } from 'react-toastify';
-import { ProfessorService } from '../../services/ProfessorService';
 import { useParams } from 'react-router-dom';
-import { OptionService } from '../../services/OptionService';
 import { CoursService } from '../../services/CourseService';
+import { ToastContainer, toast } from 'react-toastify';
+import PageHeader from '../../components/PageHeader';
 
-const CourseCreate = () => {
+const CourseUpdate = () => {
 
-   
     const [libelle, setlibelle] = useState("");
-   const [option_id, setoption_id] = useState([ ]);
-     const [niveau, setniveau] = useState("");
+    const [niveau, setniveau] = useState("");
     const [semestre, setsemestre] = useState("");
     const [semaine, setsemaine] = useState("");
     const [nbr_seance, setnbr_seance] = useState("");
-
-
-    const [options, setoptions] = useState([]);
     const [professeur, setprofesseur] = useState(" ");
-   const params = useParams();
-
-   function handleCheckboxChange(event) {
-    const ischeck = event.target.checked;
-    const value = event.target.value;
-
-    if(ischeck){
-       
-
-        setoption_id([...option_id,value]);
-        console.log(option_id);
-    }else{
-       
-        const res = option_id.filter(data =>(data!=value))
-        setoption_id(res);
-   }
+    const params = useParams();
     
-   }
-
-   function submit(event) {
-    event.preventDefault();    
-
-    const data = {
-        "libelle":libelle,
-        "professor_id":params.id,
-        "option_id":option_id,
-        "niveau":niveau,
-        "semestre":semestre,
-        "semaine":semaine,
-        "nbr_seance":nbr_seance
-    };
-   CoursService.addCourse(data).then((res)=>{
-    toast("Cours ajouter");
-   }).catch(
-   (err)=>{
-    toast.error("erreur lors de la creation du cours")
-   console.log(err);
-   });
-   }
-
     useEffect(() => {
-        ProfessorService.getProfessor(params.id).then((res)=>{
-            setprofesseur(res.data.data.first_name + " "+res.data.data.last_name)
-        }).catch((err)=>{
-            toast.error('erreur de chargement')
-        })
+        CoursService.getCourse(params.id).then((res)=>{
+            const data = res.data.data;
+            setlibelle(data.libelle)
+            setsemaine(data.semaine)
+            setnbr_seance(data.nbr_seance)
+            setprofesseur(data.professor.first_name+" "+data.professor.last_name)
 
-        OptionService.getOptions().then((res)=>{
-            setoptions(res.data.data)
         }).catch((err)=>{
-            toast.error('erreur de chargement')
+            toast.error("erreur lors du chargement de la data")
         })
-       
     }, [ ]);
 
-   
+    function updatecours(event) {
+        event.preventDefault();
+
+        const datas = {
+            "libelle":libelle,
+            "niveau":niveau,
+            "semestre":semestre,
+            "semaine":semaine,
+            "nbr_seance":nbr_seance
+        };
+        CoursService.updateCourse(params.id,datas).then((res)=>{
+            toast("modification effectuer")
+        }).catch((err)=>{
+            toast.error("erreur lors de la modif")
+        })
+    }
+ 
     return (
         <div>
         <PageHeader/>
@@ -82,7 +51,7 @@ const CourseCreate = () => {
         <div className="page-content">
           <div className="container-fluid">
             <div className="card-body">
-              <h4 className="card-title mb-4"> <b>Ajouter cours a un prof</b> </h4>
+              <h4 className="card-title mb-4"> <b>Modifier un Cours</b> </h4>
               <div className="col-sm-6">
              
               <ToastContainer
@@ -97,7 +66,7 @@ const CourseCreate = () => {
                           pauseOnHover
                           theme="light"/>
 
-                <form onSubmit={submit}>
+                <form onSubmit={updatecours} >
                   <div className="row mb-4">
                     <label
                      htmlFor="horizontal-firstname-input"
@@ -112,6 +81,7 @@ const CourseCreate = () => {
                         id="horizontal-firstname-input"
                         placeholder="Merise"
                         onChange={(e)=>(setlibelle(e.target.value))}
+                        value={libelle}
                         required
                       />
                     </div>
@@ -146,7 +116,7 @@ const CourseCreate = () => {
                     <div className="col-sm-9">
                       
                       <select onChange={(e)=>(setniveau(e.target.value))}
-                        id="formrow-inputState" class="form-select">
+                        id="formrow-inputState" class="form-select" required>
                             <option  > </option>
                       <option  value="1 année">1 année</option>
                       <option  value="2 année">2 année</option>
@@ -167,7 +137,7 @@ const CourseCreate = () => {
                     <div className="col-sm-9">
                       
                        <select   onChange={(e)=>(setsemestre(e.target.value))}
-                        id="formrow-inputState" class="form-select">
+                        id="formrow-inputState" class="form-select" required>
                       <option  > </option>
                       <option  value="semestre 1">semestre 1</option>
                       <option  value="semestre 2">semestre 2</option>
@@ -189,7 +159,7 @@ const CourseCreate = () => {
                         id="horizontal-firstname-input"
                         placeholder="S1 - S8"
                         onChange={(e)=>(setsemaine(e.target.value))}
-                       
+                       value={semaine}
                         required
                       />
                     </div>
@@ -209,42 +179,17 @@ const CourseCreate = () => {
                         id="horizontal-firstname-input"
                         placeholder=" 8"
                         onChange={(e)=>(setnbr_seance(e.target.value))}
-                       
+                       value={nbr_seance}
                         required
                       />
                     </div>
                   </div> 
-                  
-                   <div className="row mb-4">
-                    <label
-                     htmlFor="horizontal-firstname-input"
-                      className="col-sm-3 col-form-label"
-                    >
-                     Les Options :
-                    </label>
-                    <div className="col-sm-9">
-                        {
-                            options.map((data)=>{
-                                return <div>
-                                    <input class="form-check-input" value={data.id} onChange={handleCheckboxChange} type="checkbox"/>
-
-                                <label class="form-check-label" for="formCheck1">
-                                    {data.designation}
-                                </label>
-                                </div>
-                            })
-                        }
-                         
-                     </div>
-                  </div> 
-                  
-                  
 
                   <div className="row justify-content-end">
                     <div className="col-sm-9">
                       <div>
                         <button type="submit" className="btn btn-primary w-md">
-                          Enregister
+                         Modifier
                         </button>
                       </div>
                     </div>
@@ -259,4 +204,4 @@ const CourseCreate = () => {
     );
 }
 
-export default CourseCreate;
+export default CourseUpdate;

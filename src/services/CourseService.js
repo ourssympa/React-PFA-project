@@ -6,4 +6,18 @@ function addCourse(data) {
   return res;
 }
 
-export const CoursService = {addCourse};
+function getCourses( ) {
+  const res = axios.get(ApiConfig.baseUrl+"/course");
+  return res; 
+}
+function getCourse(id) {
+  const res = axios.get(ApiConfig.baseUrl+"/course/"+id);
+  return res; 
+}
+
+function updateCourse(id,data) {
+  const res = axios.put(ApiConfig.baseUrl+"/course/"+id,data);
+  return res;
+  
+}
+export const CoursService = {addCourse,getCourses,getCourse,updateCourse};
